@@ -33,7 +33,7 @@ if (params.chunks.toInteger() > 0) {
 
 db = file(params.db)
 
-include 'modules/blast' params(output: params.output)
+include 'modules/hmmsearch' params(output: params.output)
 include 'modules/publish' params(output: params.output, blastdir: params.blastdir)
 
 blast(input_ch, db)
@@ -52,7 +52,7 @@ def helpMSG() {
     log.info """
     ____________________________________________________________________________________________
     
-    Simple Blast test
+    Simple HMMsearch workflow.
     
     ${c_yellow}Usage example:${c_reset}
     nextflow run main.nf --fasta *.fasta --db db.fasta 
@@ -64,7 +64,6 @@ def helpMSG() {
     ${c_yellow}Options:${c_reset}
     --cores             max cores for local use [default: $params.cores]
     --memory            max memory for local use [default: $params.memory]
-    --chunks            split input fasta file(s) in chunks of this size [default: $params.chunks]
     --output            name of the result folder [default: $params.output]
 
     ${c_dim}Nextflow options:
@@ -73,6 +72,6 @@ def helpMSG() {
     -with-timeline time.html timeline (may cause errors)
 
     Profile:
-    -profile                 standard, googlegenomics [default: standard] ${c_reset}
+    -profile                 standard [default: standard] ${c_reset}
     """.stripIndent()
 }

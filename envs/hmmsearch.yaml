@@ -1,5 +1,5 @@
-name: blast
+name: hmmsearch
 channels:
   - bioconda
 dependencies:
-  - blast=2.6.0
+  - hmmer=3.3.2
