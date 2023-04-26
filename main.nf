@@ -58,7 +58,7 @@ def helpMSG() {
     nextflow run main.nf --proteins proteins.csv --hmms hmms.csv 
 
     ${c_yellow}Input:${c_reset}
-    ${c_green} --proteins ${c_reset}             A CSV w/ no header and one genome FASTA per row, styled: `genome_id,/path/to/fasta`
+    ${c_green} --proteins ${c_reset}            A CSV w/ no header and one protein (multi) FASTA per row, styled: `genome_id,/path/to/fasta`
     ${c_green} --hmms ${c_reset}                A CSV w/ no header and one HMM per row, styled: `hmm_id,/path/to/hmm`
 
     ${c_yellow}Options:${c_reset}
