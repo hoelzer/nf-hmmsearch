@@ -1,2 +1,2 @@
-Cav_10DC88,test-data/Cav_10DC88.faa
-Cga_08-1274-3,test-data/Cga_08-1274-3.faa
+Cav_10DC88,$HOME/.nextflow/assets/hoelzer/nf-hmmsearch/test-data/Cav_10DC88.faa
+Cga_08-1274-3,$HOME/.nextflow/assets/hoelzer/nf-hmmsearch/test-data/Cga_08-1274-3.faa

@@ -1,2 +1,2 @@
-IolB_psi,test-data/IolB_psi.hmm
-IolC_psi,test-data/IolC_psi.hmm
+IolB_psi,$HOME/.nextflow/assets/hoelzer/nf-hmmsearch/test-data/IolB_psi.hmm
+IolC_psi,$HOME/.nextflow/assets/hoelzer/nf-hmmsearch/test-data/IolC_psi.hmm

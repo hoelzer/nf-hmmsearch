@@ -2,16 +2,19 @@
 
 ## Usage
 
-````
-nextflow run main.nf --help
-````
+```bash
+# install the pipeline
+nextlow pull hoelzer/nf-hmmsearch
 
-````
-nextflow run main.nf --genomes genomes.csv --hmms hmms.csv --outdir results -profile local,conda
-````
+# get information and available releases
+nextflow info hoelzer/nf-hmmsearch
 
-You can switch to parallel execution on a SLURM cluster via 
+# run a specific release and get help
+nextflow run hoelzer/nf-hmmsearch -r 0.0.1 --help
 
-````
+# run w/ example data, locally
+nextflow run hoelzer/nf-hmmsearch --genomes genomes.csv --hmms hmms.csv --outdir results -profile local,conda
+
+# switch to parallel execution on a SLURM cluster via 
 -profile slurm,conda
-````
+```
