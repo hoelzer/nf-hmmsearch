@@ -11,7 +11,7 @@ process hmmsearch {
     
     script:
     """
-    hmmsearch --tblout ${hmm_id}.table ${hmm} ${genome} > ${hmm_id}.bin"
+    hmmsearch --tblout ${hmm_id}.table ${hmm} ${genome} > ${genome_id}.${hmm_id}.bin
     """
 }
 
