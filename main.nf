@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-nextflow.preview.dsl=2
+nextflow.enable.dsl=2
 
 // Author: hoelzer.martin@gmail.com
 
@@ -14,35 +14,35 @@ println "Workdir location:"
 println "  $workflow.workDir\u001B[0m"
 println " "
 if (params.help) { exit 0, helpMSG() }
-if (params.fasta == '') {exit 1, "input missing, use [--fasta]"}
-if (params.db == '') {exit 1, "db in fasta format missing, use [--db]"}
+if (params.genomes == '') {exit 1, "input missing, use [--genomes]"}
+if (params.hmms == '') {exit 1, "input missing, use [--hmms]"}
 
-input_ch = Channel
-.fromPath(params.fasta, checkIfExists: true)
-.map { file -> tuple(file.baseName, file) }
-.view()
+// generate input channels
+genome_input_ch = Channel
+    .fromPath(params.genomes, checkIfExists: true)
+    .splitCsv()
+    .map { row -> [row[0], file("${row[1]}", checkIfExists: true)] }
+    //.view()
 
-if (params.chunks.toInteger() > 0) {
-    input_ch = input_ch.splitFasta(by: params.chunks, file: true).view()
+hmm_input_ch = Channel
+    .fromPath(params.hmms, checkIfExists: true)
+    .splitCsv()
+    .map { row -> [row[0], file("${row[1]}", checkIfExists: true)] }
+    //.view()
+
+// load module
+include {hmmsearch} from './modules/hmmsearch'
+
+// main workflow
+workflow {
+
+    combined_ch = genome_input_ch.combine(hmm_input_ch)
+    //combined_ch.view()
+
+    hmmsearch(combined_ch)
 }
-//.splitFastq 
-//.transpose
 
-//input_ch = input_ch.groupTuple().view()
-//thus I would only start two processes in the case of two inital fasta files, but split into chunks and order to their ID
-
-db = file(params.db)
-
-include 'modules/hmmsearch' params(output: params.output)
-include 'modules/publish' params(output: params.output, blastdir: params.blastdir)
-
-blast(input_ch, db)
-blast.out.collectFile(storeDir: "${params.output}/${params.blastdir}")
-
-
-/*************  
-* --help
-*************/
+// --help
 def helpMSG() {
     c_green = "\033[0;32m";
     c_reset = "\033[0m";
@@ -52,17 +52,18 @@ def helpMSG() {
     log.info """
     ____________________________________________________________________________________________
     
-    Simple HMMsearch workflow.
+    Simple HMMsearch workflow. Hmmer all input HMMs against all input genomes.
     
     ${c_yellow}Usage example:${c_reset}
-    nextflow run main.nf --fasta *.fasta --db db.fasta 
+    nextflow run main.nf --genomes genomes.csv --hmms hmms.csv 
 
     ${c_yellow}Input:${c_reset}
-    ${c_green} --fasta ${c_reset}               '*.fasta' or foo.fasta
-    ${c_green} --db ${c_reset}                  db.fasta
+    ${c_green} --genomes ${c_reset}             A CSV w/ no header and one genome FASTA per row, styled: `genome_id,/path/to/fasta`
+    ${c_green} --hmms ${c_reset}                A CSV w/ no header and one HMM per row, styled: `hmm_id,/path/to/hmm`
 
     ${c_yellow}Options:${c_reset}
-    --cores             max cores for local use [default: $params.cores]
+    --cores             max cores per process for local use [default: $params.cores]
+    --max_cores         max cores (in total) for local use [default: $params.max_cores]
     --memory            max memory for local use [default: $params.memory]
     --output            name of the result folder [default: $params.output]
 
@@ -71,7 +72,22 @@ def helpMSG() {
     -with-dag chart.html     generates a flowchart for the process tree
     -with-timeline time.html timeline (may cause errors)
 
-    Profile:
-    -profile                 standard [default: standard] ${c_reset}
+    ${c_yellow}Caching:${c_reset}
+    --condaCacheDir         Location for storing the conda environments [default: $params.condaCacheDir]
+    -w                      Working directory for all intermediate results [default: work] 
+
+    ${c_yellow}Execution/Engine profiles:${c_reset}
+    The pipeline supports profiles to run via different ${c_green}Executers${c_reset} and ${c_blue}Engines${c_reset} e.g.: -profile ${c_green}local${c_reset},${c_blue}conda${c_reset}
+    
+    ${c_green}Executer${c_reset} (choose one):
+      local
+      slurm
+    
+    ${c_blue}Engines${c_reset} (choose one):
+      conda
+    
+    Per default: -profile local,conda is executed.
+    
+    ${c_reset}
     """.stripIndent()
 }
