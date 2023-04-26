@@ -14,12 +14,12 @@ println "Workdir location:"
 println "  $workflow.workDir\u001B[0m"
 println " "
 if (params.help) { exit 0, helpMSG() }
-if (params.genomes == '') {exit 1, "input missing, use [--genomes]"}
+if (params.proteins == '') {exit 1, "input missing, use [--proteins]"}
 if (params.hmms == '') {exit 1, "input missing, use [--hmms]"}
 
 // generate input channels
 genome_input_ch = Channel
-    .fromPath(params.genomes, checkIfExists: true)
+    .fromPath(params.proteins, checkIfExists: true)
     .splitCsv()
     .map { row -> [row[0], file("${row[1]}", checkIfExists: true)] }
     //.view()
@@ -52,13 +52,13 @@ def helpMSG() {
     log.info """
     ____________________________________________________________________________________________
     
-    Simple HMMsearch workflow. Hmmer all input HMMs against all input genomes.
+    Simple HMMsearch workflow. Hmmer all input HMMs against all input proteins.
     
     ${c_yellow}Usage example:${c_reset}
-    nextflow run main.nf --genomes genomes.csv --hmms hmms.csv 
+    nextflow run main.nf --proteins proteins.csv --hmms hmms.csv 
 
     ${c_yellow}Input:${c_reset}
-    ${c_green} --genomes ${c_reset}             A CSV w/ no header and one genome FASTA per row, styled: `genome_id,/path/to/fasta`
+    ${c_green} --proteins ${c_reset}             A CSV w/ no header and one genome FASTA per row, styled: `genome_id,/path/to/fasta`
     ${c_green} --hmms ${c_reset}                A CSV w/ no header and one HMM per row, styled: `hmm_id,/path/to/hmm`
 
     ${c_yellow}Options:${c_reset}
