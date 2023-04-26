@@ -4,7 +4,7 @@
 
 ```bash
 # install the pipeline
-nextlow pull hoelzer/nf-hmmsearch
+nextflow pull hoelzer/nf-hmmsearch
 
 # get information and available releases
 nextflow info hoelzer/nf-hmmsearch
@@ -13,8 +13,12 @@ nextflow info hoelzer/nf-hmmsearch
 nextflow run hoelzer/nf-hmmsearch -r 0.0.1 --help
 
 # run w/ example data, locally
-nextflow run hoelzer/nf-hmmsearch --genomes genomes.csv --hmms hmms.csv --outdir results -profile local,conda
+git clone https://github.com/hoelzer/nf-hmmsearch.git
+cd nf-hmmsearch
+nextflow run hoelzer/nf-hmmsearch -r 0.0.1 --genomes test-data/proteins.csv --hmms test-data/hmms.csv --outdir results -profile local,conda
 
-# switch to parallel execution on a SLURM cluster via 
--profile slurm,conda
+# switch to parallel execution on a SLURM cluster and using your own input data 
+nextflow run hoelzer/nf-hmmsearch -r 0.0.1 --genomes proteins.csv --hmms hmms.csv --outdir results -profile slurm,conda
 ```
+
+**Attention:** nextflow always writes a `work` folder for intermediate data. You can change the path via `-w /path/to/work/dir` if necessary. Also, this folder might become huge and is not deleted automatically.  
