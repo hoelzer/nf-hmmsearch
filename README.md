@@ -7,11 +7,11 @@ nextflow run main.nf --help
 ````
 
 ````
-nextflow run main.nf --fasta 'data/*.fa' --db data/db.fasta --cores 4 --outdir results -profile conda
+nextflow run main.nf --genomes genomes.csv --hmms gmms.csv --outdir results -profile local,conda
 ````
 
-You can switch between execution using docker containers and conda environments via 
+You can switch to parallel execution on a SLURM cluster via 
 
 ````
--profile [docker|conda]
+-profile slurm,conda
 ````
